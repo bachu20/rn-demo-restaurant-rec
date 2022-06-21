@@ -1,12 +1,16 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 
+import placeholderImage from "../../assets/default-placeholder-300x300.png";
+
 const BusinessItem = ({ item }) => {
+  const image = item.image_url ? { uri: item.image_url } : placeholderImage;
+
   return (
     <View style={styles.wrapper}>
-      <Image style={styles.image} source={{ uri: item.image }} />
+      <Image style={styles.image} source={image} />
       <Text style={styles.title}>{item.name}</Text>
       <Text style={styles.subtitle}>
-        {item.stars} Stars, {item.review_count} Reviews
+        {item.rating} Stars, {item.review_count} Reviews
       </Text>
     </View>
   );

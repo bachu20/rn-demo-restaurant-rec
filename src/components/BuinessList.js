@@ -8,6 +8,7 @@ const BusinessList = ({ items, category }) => {
       <Text style={styles.categoryTitle}>{category}</Text>
 
       <FlatList
+        showsHorizontalScrollIndicator={false}
         data={items}
         horizontal
         keyExtractor={({ id }) => id}

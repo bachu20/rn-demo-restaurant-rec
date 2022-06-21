@@ -1,41 +1,27 @@
-import { useState } from "react";
-import { StyleSheet, View, FlatList } from "react-native";
+import { useState, useEffect } from "react";
+import { StyleSheet, View, FlatList, Text } from "react-native";
+
+import YelpClient from "../clients/yelp";
 
 import SearchBar from "../components/SearchBar";
 import BusinessList from "../components/BuinessList";
 
-const samplePrice = "$$$$";
-
-const sampleItems = new Array(10).fill("placeholder").map((v, i) => ({
-  id: i,
-  image: `https://picsum.photos/seed/randomseed${i}/300/200`,
-  price: samplePrice.slice(0, Math.ceil(Math.random() * 4)),
-  stars: 4.5,
-  review_count: Math.floor(Math.random() * 1000),
-  name: "Fish City #" + (i + 1),
-}));
-
-const getFilteredBusinessItems = (sourceList, filter) => {
-  if (sourceList.length && filter) {
-    return sourceList.filter((item) =>
-      item.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  }
-
-  return sourceList;
-};
+const Client = new YelpClient();
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState();
-  const [businessItems, setBusinessItems] = useState(sampleItems);
+  const [query, setQuery] = useState({});
+  const [businesses, setBusinesses] = useState([]);
 
-  const handleOnSearchSubmit = () => {
-    setBusinessItems(getFilteredBusinessItems(sampleItems, searchValue));
-  };
+  useEffect(() => {
+    Client.searchBusinesses({ limit: 50, ...query }).then((response) =>
+      setBusinesses(response.data.businesses)
+    );
+  }, [query]);
 
-  const costEffective = businessItems.filter((i) => i.price.length < 3);
-  const bitPricier = businessItems.filter((i) => i.price.length === 3);
-  const bigSpender = businessItems.filter((i) => i.price.length > 3);
+  const costEffective = businesses.filter((i) => i.price === "$");
+  const bitPricier = businesses.filter((i) => i.price === "$$");
+  const bigSpender = businesses.filter((i) => ["$$", "$$$"].includes(i.price));
 
   const businessCategories = [
     { items: costEffective, category: "Cost Effective" },
@@ -48,12 +34,18 @@ const Home = () => {
       <SearchBar
         searchValue={searchValue}
         setSearchValue={setSearchValue}
-        onSearchSubmit={handleOnSearchSubmit}
+        onSearchSubmit={() => setQuery({ term: searchValue })}
       />
 
+      <Text style={styles.total}>
+        We have found {businesses.length}{" "}
+        {businesses.length === 1 ? "result" : "results"}
+      </Text>
+
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={businessCategories}
-        keyExtractor={(_, index) => index}
+        keyExtractor={({ category }) => category}
         renderItem={({ item, index }) => (
           <View>
             <BusinessList items={item.items} category={item.category} />
@@ -63,16 +55,6 @@ const Home = () => {
           </View>
         )}
       />
-
-      <BusinessList items={costEffective} category="Cost Effective" />
-
-      <View style={styles.hr} />
-
-      <BusinessList items={bitPricier} category="Bit Pricer" />
-
-      <View style={styles.hr} />
-
-      <BusinessList items={bigSpender} category="Big Spender!" />
     </View>
   );
 };
@@ -82,6 +64,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: "#fff",
+    flex: 1,
+  },
+  total: {
+    alignSelf: "center",
+    marginVertical: 18,
+    fontWeight: "400",
   },
   hr: {
     borderBottomColor: "black",
