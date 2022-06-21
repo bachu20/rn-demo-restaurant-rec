@@ -77,4 +77,6 @@ class YelpClient {
   }
 }
 
-export default YelpClient;
+const Client = new YelpClient();
+
+export default Client;

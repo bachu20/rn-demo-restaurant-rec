@@ -1,16 +1,28 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-import placeholderImage from "../../assets/default-placeholder-300x300.png";
+import placeholder from "../../assets/default-placeholder-300x300.png";
 
-const BusinessItem = ({ item }) => {
-  const image = item.image_url ? { uri: item.image_url } : placeholderImage;
+const BusinessItem = ({ business }) => {
+  const navigation = useNavigation();
+  const image = business.image_url ? { uri: business.image_url } : placeholder;
 
   return (
     <View style={styles.wrapper}>
-      <Image style={styles.image} source={image} />
-      <Text style={styles.title}>{item.name}</Text>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("Business", {
+            businessID: business.id,
+            businessName: business.name,
+          })
+        }
+      >
+        <Image style={styles.image} source={image} />
+      </TouchableOpacity>
+
+      <Text style={styles.title}>{business.name}</Text>
       <Text style={styles.subtitle}>
-        {item.rating} Stars, {item.review_count} Reviews
+        {business.rating} Stars, {business.review_count} Reviews
       </Text>
     </View>
   );

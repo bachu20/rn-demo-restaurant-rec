@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, FlatList, Text } from "react-native";
 
-import YelpClient from "../clients/yelp";
+import Client from "../clients/yelp";
 
 import SearchBar from "../components/SearchBar";
 import BusinessList from "../components/BuinessList";
 
-const Client = new YelpClient();
-
-const Home = () => {
+const BusinessSearch = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState();
   const [query, setQuery] = useState({});
   const [businesses, setBusinesses] = useState([]);
@@ -62,7 +60,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 20,
     backgroundColor: "#fff",
     flex: 1,
   },
@@ -78,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default BusinessSearch;

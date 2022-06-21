@@ -2,7 +2,7 @@ import { View, FlatList, Text, StyleSheet } from "react-native";
 
 import BusinessItem from "./BusinessItem";
 
-const BusinessList = ({ items, category }) => {
+const BusinessList = ({ items, category, navigation }) => {
   return (
     <View>
       <Text style={styles.categoryTitle}>{category}</Text>
@@ -12,7 +12,7 @@ const BusinessList = ({ items, category }) => {
         data={items}
         horizontal
         keyExtractor={({ id }) => id}
-        renderItem={({ item }) => <BusinessItem item={item} />}
+        renderItem={({ item }) => <BusinessItem business={item} />}
       />
     </View>
   );
